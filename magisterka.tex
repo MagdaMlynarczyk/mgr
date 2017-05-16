@@ -1,0 +1,409 @@
+
+\documentclass[]{pracamgr}
+\usepackage{polski}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\usepackage{amsmath}
+
+\usepackage{color}
+
+\usepackage{graphicx}  
+
+
+% Dane magistranta:
+\autor{Magda Młynarczyk}{339340}
+
+
+\title{Tu będzie tytuł}
+
+\kierunek{matematyka}
+
+\zakres{matematyki stosowanej}
+
+% Praca wykonana pod kierunkiem:
+% (podać tytuł/stopień imię i nazwisko opiekuna
+% Instytut
+% ew. Wydział ew. Uczelnia (jeżeli nie MIM UW))
+\opiekun{dra hab. Przemysława Biecka\\
+  Instytut Matematyki Stosowanej i Mechaniki \\
+  }
+
+% miesiąc i~rok:
+\date{Maj 2017}
+
+%Podać dziedzinę wg klasyfikacji Socrates-Erasmus:
+\dziedzina{ 
+%11.0 Matematyka, Informatyka:\\ 
+%11.1 Matematyka\\ 
+11.2 Statystyka\\ 
+%11.3 Informatyka\\ 
+%11.4 Sztuczna inteligencja\\ 
+%11.5 Nauki aktuarialne\\
+%11.9 Inne nauki matematyczne i informatyczne
+}
+
+%Klasyfikacja tematyczna wedlug AMS (matematyka) lub ACM (informatyka)
+\klasyfikacja{D. Software\\
+  D.127. Blabalgorithms\\
+  D.127.6. Numerical blabalysis}
+
+% Słowa kluczowe:
+\keywords{analiza przeżycia, model ryzyk konkurujących}
+
+% Tu jest dobre miejsce na Twoje własne makra i~środowiska:
+\newtheorem{defi}{Definicja}[section]
+\newtheorem{twr}{Twierdzenie}[section]
+% koniec definicji
+
+\begin{document}
+
+\maketitle
+
+%tu idzie streszczenie na strone poczatkowa
+\begin{abstract}
+Tu będzie streszczenie
+\end{abstract}
+
+\tableofcontents
+%\listoffigures
+%\listoftables
+
+\chapter*{Wprowadzenie}
+\addcontentsline{toc}{chapter}{Wprowadzenie}
+
+Tu będzie wprowadzenie.
+
+\chapter{Analiza przeżycia - teoria}
+
+\section{Podstawy}
+
+
+Analiza przeżycia jest gałęzią statystyki zajmującą się badaniem czasu do wystąpienia danego zdarzenia oraz czynników wpływających na ten czas. Pojęcie zdarzenia obejmuje szerokie spektrum wydarzeń i zjawisk, takie jak śmierć, choroba, niewypłacalność czy awaria urządzenia. Dzięki temu, metody jakie oferuje nam analiza przeżycia mogą być stosowane w bardzo wielu dziedzinach.Pojęcie zdarzenia określa się czasem jako 'porażka', mimo, iż może ono odnosić się także do pozytywnych wydarzeń (np. poprawa stanu zdrowia pacjenta). Bardzo ważnym spostrzeżeniem jest fakt, że w standardowej analizie przeżycia rozważamy tylko jedno zdarzenie, które może wystąpić u każdej jednostki. W przypadku więcej niż jednego możliwego zdarzenia rozważamy modele zdarzeń rekurencyjnych bądź modele ryzyk konkurencyjnych, o których mowa będzie w następnych podrozdziałach.
+
+Podstawowym celem analizy przeżycia, jest nie tylko modelowanie i interpretacja rozkładu czasu przeżycia w danej populacji. Bardzo istotnym elementem jest tutaj także porównywanie tych rozkładów w różnych grupach (np. w przypadku badania efektu placebo) oraz związek między tymi rozkładami a zmiennymi na nie wpływającymi - tak zwanymi zmiennymi objaśniającymi. 
+
+Fundamentalną częścią analizy przeżycia jest zdefiniowane jednoznacznie określonej zmiennej losowej $T$ reprezentującej czas od określonego punktu w czasie do wystąpienia zdarzenia. Zmienna ta może być wyrażona w dowolnej jednostce czasu (sekundy, dni, lata...). Druga niezbędną definicją jest określenie zmiennej $d$, oznaczającej, czy dana obserwacja była cenzorowana - to znaczy, że czas początku obserwacji bądź czas wystąpienia zdarzenia nie jest znany. Formalnie:
+
+\begin{equation} 
+d_{i} = \begin {cases} 0 &\text{gdy $i-ta$ obserwacja jest cenzorowna}\\ 1 &\text{w przeciwnym przypadku} \end{cases} 
+\end{equation} 
+gdzie: \\
+$i \in \{1,2,...,N\} - $ numer obserwacji.
+
+Najczęściej występującym przykładem cenzorowania jest cenzorowanie prawostronne, kiedy wiemy, że zdarzenie nie wystąpiło przed danym czasem $T^{*}$. Rzadziej występuje cenzorowanie lewostronne, kiedy wiemy, że zdarzenie wystąpiło przed danym czasem  $T^{**}$ oraz cenzorowanie przedziałowe  kiedy wiemy, że wydarzenie wystąpiło w danym przedziale czasowym $[T^{**}, T^{*}]$
+
+
+Możemy wyróżnić trzy typy cenzorowania:
+\begin{itemize}
+\item typ I - przedział czasowy, w którym jednostki są obserwowane jest z góry określony
+\item typ II - jednostki są obserwowane, aż zdarzenie wystąpi w określonej frakcji badanych jednostek
+\item losowe
+\end{itemize}
+
+{\large{\color{red}POPRAW, {sa} str 37-39}}
+oraz trzy założenia dotyczące cenzorowania:
+\begin{itemize}
+\item niezależność - ...
+\item losowość - ...
+\item {\color{red} informatywność?} - ...
+\end{itemize}
+
+Aby określić rozkład przeżycia potrzebujemy następujących, kluczowych definicji:
+\begin{defi}\label{funkcja przeżycia}
+\textbf{Funkcja przeżycia} - funkcja $S:[0,\infty) \to [0,1]$ dana wzorem:
+
+$$S(t) = \mathbf{P}(t < T), \ \ \ 0 < t < \infty $$
+\end{defi}
+
+Funkcja przeżycia określa prawdopodobieństwo przeżycia do chwili $t$, dając nam najistotniejszą informację,jaką dostajemy z naszych danych dla analizy przeżycia. Jest ona niemalejącą, prawostronnie ciągłą funkcją czasu. Zachodzi:
+$$S(0) = 1$$
+
+
+Funkcję przeżycia często definiuje się także w terminach funkcji hazardu.
+
+\begin{defi}\label{hazard}
+\textbf{Funkcja hazardu} - funkcja $h:[0, \infty) \to \mathbf{R}$ dana wzorem:
+$$h(t) = lim_{\delta \to 0} \frac{\mathbf{P}(t<T<t+\delta|T>t)}{\delta}$$
+\end{defi}
+
+Funkcja hazardu jest prawdopodobieństwem, że zdarzenie nastąpi w następnym 'dowolnie krótkim' przedziale czasu, jeżeli wiemy, że nie nie wystąpiło przed czasem $t$, podzielonym przez długość tego przedziału czasowego. Jest to funkcja nieujemna, nieograniczona z góry. Nazywana jest także funkcją ryzyka.
+
+Zdefinowane powyżej dwie funkcje pozwalają na określenie rozkładu przeżycia. Do dalszych analiz przydatnych jest jednak jeszcze kilka definicji.
+
+\begin{defi}\label{cdf}
+\textbf{Dystrybuanta funkcji ryzyka} - funkcja $F:[0, \infty) \to [0,1]$ dana wzorem:
+$$F(t) = \mathbf{P}(t \leq T)$$
+\end{defi}
+
+\begin{defi}\label{pdf}
+\textbf{Gęstość prawdopodobieństwa} - funkcja $f:[0, \infty) \to \mathbf{R}$ dana wzorem:
+$$f(t) = - \frac{d}{dt}S(t) = \frac{d}{dt}F(t)$$
+\end{defi}
+
+Na podstawie powyższych definicjo otrzymujemy zależność
+\begin{equation}
+h(t) = \frac{f(t)}{S(t)}
+\end{equation}
+
+To znaczy, że hazard w momencie $t$ jest prawdopodobieństwem, że zdarzenie pojawi się w 'okolicach' momenty $t$ podzielonym przez prawdopodobieństwo, że zdarzenie nie pojawiło się do czasy $t$.
+
+\begin{defi}
+\textbf{Dystrybuanta funkcji hazardu} - funkcja $H:(0,\infty) \to \mathbf{R}$ dana wzorem:
+$$H(t) = \int_0^t h(u)du $$
+\end{defi}
+
+Dystrybuanta funkcji hazardu w punkcie $t$ jest zdefiniowana jako pole pod wykresem funkcji hazardu do momentu $t$. Funkcję przeżycia możemy teraz zapisać w postaci:
+
+\begin{equation}
+S(t) = \exp(-\int_0^t h(u)du) = \exp(-H(t))
+\end{equation}
+
+\section{Podstawowe modele parametryczne}
+W analizie przeżycia zakłada się czasami dany rozkład przeżycia, otrzymując model parametryczny. Najprostszym przykąłdem jest model eksponencjalny, w którym zakłada się stały hazard:
+\begin{equation}\label{exp_hazard}
+h(t) = \lambda
+\end{equation}
+Wówczas otrzymujemy:
+$$H(t) = \int_0^t h(u)du = \int_0^t \lambda du = \lambda t $$
+
+$$S(t) = exp(-H(t)) = exp(-\lambda t)$$
+
+$$f(t) = h(t)S(t) = \lambda \exp(-\lambda t) $$
+
+Założenie stałego hazardu często nie jest spełnione. Innym często używanym modelem jest model o rozkładzie Weibulla z funkcją hazardu:
+\begin{equation}\label{weibull_haz}
+h(t) = \alpha \lambda (\lambda t)^{\alpha -1}, \ \ \ \alpha, \lambda > 0
+\end{equation}
+Dla tego modelu otrzymujemy:
+$$H(t) = \int_0^t h(u)du = \alpha \lambda^\alpha \int_0^t u^{\alpha - 1}du = \alpha \lambda^\alpha \frac{1}{\alpha} u^{\alpha}|_0^t = (\lambda t)^\alpha $$
+
+$$S(t) = exp(-H(t)) = exp(-(\lambda t)^\alpha)$$
+
+Rozkład eksponencjalny jest specjanym przypadkiem rozkładu Weibulla dla parametru $\alpha=1$. Dla $\alpha >1$ funkcja hazardu jest rosnąca, dla $\alpha <1$ jest malejąca.
+
+Funkcję przeżycia estymuję się także za pomocą rozkładu lognormalnego. Mamy wówczas:
+\begin{equation}\label{lognorm}
+S(t) = 1 - \Phi (\frac{\log(t)-\mu}{\sigma})
+\end{equation}
+gdzie: \\
+$\Phi$ - dystrybuanta rozkładu normalnego $\mathbf{N}(0,1)$
+Funkcja hazardu w tym przypadku monotonicznie rośnie od $0$ do swojego maksimum, a następnie monotoniczne maleje do $0$ przy $t \to 0$. Dlatego model ten jest przydatny, kiedy prawdopodobieństwo wystąpienia zdarzenia rośnie na początku obserwacji, a później maleje.
+
+Kolejnym rozkładem używanym do modelowania przeżycia jest rozkład gamma, o gęstości danej:
+\begin{equation}\label{gamma}
+f(t) = \frac{\lambda^\beta t^{\beta - 1} exp(-\lambda t)}{\Gamma(\beta)}, \ \ \ \lambda, \beta > 0
+\end{equation}
+Dla tego modelu funkcja przeżycia oraz funkcja hazardu nie dają zapisać się w prostej formie, mogą być jednak oblioczne za pomocą wzorów z poprzedniego podrozdziału. Ponownie, Rozkład gamma, dla parametru $\beta = 1$ sprowadza się do rozkłady wykładniczego. Dla $\beta < 1$ funkcja hazardu jest rosnąca, dla $\beta > 1$ jest malejąca.
+
+\section{Estymacja modeli nieparametrycznych}
+
+W wielu przypadkach nie jesteśmy w stanie wybrać odpowiedniej rodziny parametrycznej do opisu naszego modelu. Zajmujemy się wtedy modelami nieparametrycznymi, posiadającymi bardziej elastyczne właściowości modelowania. 
+
+Podstawowym estymatorem funkcji przeżycia używanym w analizie przeżycia jest \textbf{estymator Kaplana-Mayer'a}, dany wzorem:
+\begin{equation} \label{KME}
+\hat{S}(t) = \prod_{t_i \leq t} (1-\hat{q_{i}}) =  \prod_{t_i \leq t} (1 - \frac{d_{i}}{n_{i}})
+\end{equation} 
+gdzie:
+\\ $n_i$ - liczba jednostek narażonych na wystąpienie zdarzenia w czasie $t_i$,
+\\ $d_i$ - liczba jednostek u których nastąpiło zdarzenie w czasie $t_i$.
+
+Estymator Kaplana-Mayer'a jest nierosnącą funkcją schodkową, prawostronnie ciągłą. Najczęściej stosowanym estymatorem wariancji dla krzywej Kaplana-Mayera jest estymator zaproponowany przez Majora Greenwooda \cite{Greenwood} w 1926 roku, dany wzorem:
+\begin{equation}
+\mathrm{var}(\hat{S}(t)) \approx [\hat{S}(t)]^2 \sum_{t_i \leq t} \frac{d_i}{n_i (n_i - d_i)}
+\end{equation}
+
+Zauważmy, że
+$$ \forall_i \ \  \frac{d_i}{n_i (n_i - d_i)} = \frac{1}{n_i} \mathrm{P}(T>t_i)\mathrm{P}(T \geq t_i) $$
+
+Przedział ufności na poziomie $95\%$ wynosi wówczas:
+\begin{equation}
+\hat{CI}(t) = [-1.96 \sqrt{\mathrm{var}(\hat{S}(t))}, \ 1.96 \sqrt{\mathrm{var}(\hat{S}(t))}]
+\end{equation}
+
+
+
+\section{Porównywanie modeli analizy przeżycia}
+
+Głównym tematem mojej pracy jest porównywanie modeli ryzyk konkurujących pośród danych grup. Aby móc się tym zajmować, należy najpierw zrozumieć ideę porównywania modeli w przypadku zwykłej analizy przeżycia, którą będziemy później rozszerzać na przypadek ogólniejszy.
+
+W przypadku modeli parametrycznych stosować można fundamentalne testy statystyczne, takie jak test t-studenta, jeżeli możemy założyć normalność rozkładu, bądź test Manna-Whitney'a, jeżeli założenie o normalności rozkładu nie jest spełnione. Jeżeli chcemy dopasować odpowiedni parametr danego rozkładu do naszych obserwacji, możemy użyć metodę największej wiarygodności.
+
+Dla modeli nieparametrycznych potrzebujemy skonstruować test porównujący dwie krzywe przeżycia. Jako, że porównujemy ze sobą dwie krzywe, test statystyczny ze standardową hipotezą zerową i alternatywną:
+$$H_0: S_1(t) = S_0(t)$$
+$$H_1: S_1(t) \neq S_0(t)$$
+nie jest adekwatny. Dwie krzywe przeżycia, mogą się krzyżować, albo być podobne na jednym odcinku oraz różne na innym odcinku czasu. W związku z tym, wprowadzamy rozwiązanie zwane \textbf{alternatywą Lehmana}:
+$$H_1: S_1(t) = [S_0(t)]^\psi$$
+Równoważnie, dostajemy test hipotezy zerowej:
+\begin{equation}
+H_0: \psi = 1
+\end{equation}
+przeciwko hipotezie alternatywnej:
+\begin{equation}
+H_1: \psi < 1
+\end{equation}
+Oznacza to, że przy założeniu hipotezy alternatywnej, czasy przeżycia w grupie $1$ będą dłuższe niż te w grupie $0$. W analizie przeżycia, grupę $0$ często traktuje się jako grupę kontrolną, a grupę $1$ jako grupę testową. 
+
+Do skonstruowania testu, dla każdego czasu $t_i$ potrzebujemy stworzyć tabelkę wielkości $2x2$ zawierającą liczbę jednostek u których nastąpiło zdarzenie i u których nie nastąpiło zdarzenie w czasie $t_i$ dla obydwu grup.
+
+\begin{table}[ht] 
+\caption{Tabela przeżycia w czasie $t_i$} 
+\centering 
+\begin{tabular}{c c c | c}
+\hline\hline                        
+& Grupa kontrolna & Grupa testowa & Razem \\ [0.5ex]
+\hline                   
+Liczba zdarzeń & $d_{0i}$ & $d_{1i}$ & $d_{i}$ \\ 
+Liczba jednostek bez zdarzenia  & $n_{0i} - d_{0i}$ & $n_{1i} - d_{1i}$ & $n_i - d_i$ \\   
+\hline
+Razem & $n_{0i}$ & $n_{1i}$ & $n_i$ \\ 
+\hline  
+\end{tabular} \label{table:przezycie}
+\end{table} 
+
+Zakładając, że liczba zdarzeń w grupie kontrolnej i testowej jest niezależna, otrzymujemy hipergeometryczny rozkład $d_{0i}$ pod warunkiem $n_{0i}, n_i, d_i$:
+
+\begin{equation}
+\mathbf{P}(d_{0i} | n_{0i}, n_{1i}, d_i) = \frac{ \binom{n_{0i}}{d_{0i}} \binom{n_{1i}}{d_{1i}} }{ \binom{n_i}{d_i} }
+\end{equation}
+gdzie:
+$$\binom {n} {d} = \frac{n!}{d!(n-d)!}, \ \ \ n! = n*(n-1)*...*2*1$$
+Możemy teraz obliczyć średnią i wariancję zmiennej $d_{0i}$:
+$$e_{0i} = \mathbf{E}d_{0i} = \frac{d_{0i}d_i}{n_i}$$
+
+$$v_{0i} = \mathrm{var}(d_{0i}) = \frac{n_{0i}n_{1i}d_i(n_i-d_i)}{n_i^2(n_i-1)} $$
+W następnym kroku sumujemy wszystkie różnice wartości obserwowanych i oczekiwanych zmiennej $d_0$, otrzymując liniową statystykę:
+$$U_0 = \sum_{i = 1}^N(d_{0i}-e_{0i})$$
+$$V_0 = \mathrm{var}(U_0) = \sum_{i = 1}^N v_{0i}$$
+Teraz możemy skonstruować statystykę testową:
+\begin{equation}
+\frac{U_0^2}{V_0} \sim \chi_1^2
+\end{equation}
+
+Powyższy test nazywany jest \textbf{logarytmicznym testem rang}. Test ten można uogólnić na tak zwany \textbf{ważony logarytmiczny test rang}, taki, że:
+
+$$U_{0}(w) = \sum_{i = 1}^Nw_i(d_{0i}-e_{0i})$$
+$$V_0(w) = \mathrm{var}(U_0(w)) = \sum_{i = 1}^N w_i^2v_{0i}$$
+
+Istnieje wiele testów opierających się na powyższej formule, zakładających różne postaci wag. 
+Jednym z niche jest \textbf{test Wilcoxona}, dla którego wagą w czasie $i$ jest liczba jednostek pod ryzykiem w czasie $i$:
+$$w_i= n_i$$ 
+\textbf{Test Tarone-Ware'a} przypisuje większą wagę do zdarzeń mających miejsce wcześniej, poprzez wykorzystanie pierwiastka z liczby jednostek pod ryzykiem jako wagi:
+$$ w_i = \sqrt{n_i}$$
+
+\textbf{Test Flemminga-Harringtona} \cite{Oakes} daje największą elastyczność w wyborze statystki testowej, poprzez wybranie parametru $\rho$:
+\begin{equation}
+w_i = N(\hat{S}(t_i))^\rho
+\end{equation}
+
+W środowisku R w pakiecie \texttt{survival} \cite{survival_package} porównanie krzywych przeżycia za pomocą testu Flemminga-Harringtona może być wykonane za pomocą funkcji \texttt{survdiff}.
+
+Innym możliwym sposobem na porównanie modeli analizy przeżycia jest wykonanie \textbf{testu warstwowego} (ang. stratified test). Jest to kolejna modyfikacja logarytmicznego testu rangowego, używana w przypadku kiedy mamy kategoryczną zmienną objaśnianą $G$ o niewielkiej liczbie poziomów $G \in \{g_1, g_2,...,g_{n_g}\}$. Zmienna $G$ może oznaczać na przykład płeć, grupę wiekową czy podawaną dawkę leku. Testujemy wówczas hipotezę zerową:
+$$H_0: h_{0j}(t) = h_{1j}(t), \ \ \ \text{dla} \ j = 1,2,...,n_g$$
+Dla każdej wartości zmiennej $G= g$ obliczamy statystyki $U_{0g}$ oraz $V_{0g}$ a następnie wyznaczamy statystykę testową:
+$$ X^2 = \frac{(\sum_{n = 1}^{n_g} U_{0g_{n}})^2}{\sum_{n = 1}^{n_g} V_{0g_{n}}^2} \sim \chi_{n_{g}-1}^2 $$
+
+Statystyka testowa w powyższym teście różni się od tej ze logarytmicznego testu rang tym, że różnica zdarzeń obserwowanych i oczekiwanych jest sumowana po wszystkich czasach zdarzeń w każdej warstwie, a następnie różnice te są sumowane po wszystkich wartwach. 
+
+W pakiecie \texttt{survival} zaimplemetnowana została funkcja \texttt{strata} identyfikująca zmienne warstwowe, która może być wykorzystywana przy tworzeniu modeli proporcjonalnego hazardu.
+
+\section{Model Coxa}
+
+\textbf{Model Coxa}, nazywany także \textbf{modelem proporcjonalnego hazardu}, został po raz pierwszy zaproponowany przez Sir Davida Coxa i opiera się na \textbf{założeniu proporcjonalnego hazardu}:
+\begin{equation}\label{ph assum}
+h_1(t)  = \Psi h_0(t)
+\end{equation}
+które stwierdza, że zmienne objaśniane w modelu nie zależą od czasu i wpływają na funkcję hazardu w sposób multiplikatywny. Nazwa powyższego założenia odnosi się do faktu, że dla dwóch obserwacji iloraz ich funkcji hazardu jest stały. Model Coxa zakłada następującą postać funkcji hazardu:
+
+\begin{equation}
+h_1(t) = h_0(t) e^{\beta_1z_1 + \beta_2z_2 +...+ \beta_mz_m}
+\end{equation}
+gdzie: \\
+$h_0(t)$ - hazard bazowy \\
+$z_1, z_2,..., z_m$ - zmienne objaśniane, niezależne od czasu $t$ \\
+$\beta_1, \beta_2,...,\beta_m$ - parametry
+
+Powyższy model jest ogólną postacią regresji logistycznej. 
+
+W przypadku, gdy w modelu nie ma zmiennych objaśnianych, bądź wszystkie zmienne wynoszą $0$, funkcja hazardu przyjmuje postać hazardu bazowego.
+
+Ważną cechą modelu Coxa jest to, że postać funkcji $h_0(t)$ jest nieokreślona (model jest \textbf{semiparametryczny}), co czyni go adekwatnym do modelowania w różnych sytuacjach. Jeżeli nie jesteśmy pewni co poprawnego rozkładu naszych danych, użycie modelu Coxa powinno dać nam porównywalne wyniki do tych, które uzyskalibyśmy używając poprawnego rozkładu. Dodatkowo, mimo, iż nie znamy postaci hazardu bazowego, jesteśmy w stanie estymować parametry $\beta_1,...,\beta_m$. Dzięki tym własnościom jest on najczęściej używanym modelem w analizie przeżycia. 
+
+Estymację współczynników $\beta_i$ możńa wykonać przy pomocy metody największej wiarygodności. Jako, że nie znamy postaci hazardu bazowego, korzystamy tutaj z częściowej wiarygodności:
+\begin{equation}
+L(\beta) = \prod_{i: d_{i} = 1} \frac{e^{X_{i}\beta_{i}}}{\sum_{j:t_{j}>t_{i}}e^{X_{1}\beta_{1}+...+X_{m}\beta_{m}}}
+\end{equation}
+
+
+
+
+
+
+
+
+
+\section{Modele ryzyk konkurujących}\label{comp risks}
+
+Głównym zagadnieniem, którym zajmuję się w tej pracy są \textbf{modele ryzyk konkurujących}. Jest to jedno z dwóch podstawowych, obok modeli wielostanowych, uogólnień analizy przeżycia. W przypadku modeli ryzyk konkurujących mamy doczynienia z więcej niż jednym możliwym zdarzeniem i obserwujemy czas do wystąpienia pierwszego z nich, w odróżnieniu do modeli wielostanowych, w których po wystąpieniu jednego zdarzenia może wystąpić następne.
+
+\chapter{Biblioteka jakas nazwa}\label{r:losers}
+
+\section{Wprowadzenie}
+
+możliwości zastosowanie, porównanie z innymi rozwiązaniami
+
+\section{Algorytm}
+
+Jak porównujemy grupy
+
+\section{Opis dostępnych funkcji}
+
+Opis wszystkich funkcji z pakietu
+
+\chapter{Przykład zastosowania na danych pacjentów z ostrą białaczką szpikową}\label{r:fifak}
+
+\section{Opis danych}
+
+Skąd mam dane, o co w nich chodzi
+
+\section{Eksploracja danych}
+
+tabelki, wykresiki
+
+\section{Model ryzyk konkurujących}
+
+Model ryzyk konkurujących zastosowany do moich danych
+
+\section{Zastosowanie mojej biblioteki}
+porównanie modeli ryzyk konkurujących w różnych grupach
+
+
+\chapter{Podsumowanie i dyskusja}\label{r:impl}
+
+co udało mi się zrobić i co możnaby ulepszyć
+
+\chapter{Kod źródłowy}
+\section{użyty kod}
+
+Załącz kod?
+
+
+\begin{thebibliography}{99}
+\addcontentsline{toc}{chapter}{Bibliografia}
+
+\bibitem{asaR} Dirk F. Moore, \textit{Applied Survival Analysis Using R}, Springer, 2016
+
+\bibitem{sa} David G. Kleinbaum, Mitchel Klein, \textit{Survival Analysis}, Springer, 2012
+
+\bibitem{Greenwood} S. Sawyer, \textit{The Greenwood and Exponential Greenwood Confidence Intervals in Survival Analysis}, 2003
+
+\bibitem{Oakes} D.Cox, D.Oakes, \textit{Analysis of Survival Data}, Chapman and Hall/CRC, London, New York, 1984
+
+\bibitem{survival_package} {\color{red}jak dodać manuale??} survival package manual
+
+\bibitem{cr&mm} J Beyersmann, M.Schumacher, A. Allignol, \textit{Competing Risks and Multistate Models with R}, Springer, 2012
+
+\end{thebibliography}
+
+\end{document}
