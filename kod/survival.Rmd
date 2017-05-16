@@ -1,0 +1,115 @@
+---
+title: "survdiff"
+author: "Magda Młynarczyk"
+date: "16 maja 2017"
+output: html_document
+---
+co nam daje pakiet survival?
+
+Estymacja Kaplana Meyera, dla każdego z ryzyk osobno - inne zdarzenia rtaktujemy jako censoring
+```{r}
+library(dplyr)
+library(stringr)
+library(survival)
+library(ggplot2)
+
+setwd("C:/Users/Magda/Desktop/magisterka/stare dane")
+load("dane_obrobione.rda")
+
+dt$status_infekcja <- as.numeric(dt$Infekcja)
+dt$status_zgon <- as.numeric({dt$Infekcja == 0 & dt$Zgon == 1})
+dt$czas <- ifelse(dt$Infekcja == 1, dt$`Cykl Vidazy przy infekcji`, dt$OS)
+dt$status <- dt$status_infekcja+2*dt$status_zgon
+colnames(dt)[which(colnames(dt) == "Rozpoznanie")] <- "rozpoznanie"
+```
+
+survfit dla dwóch ryzyk niezależnie, nie uwzględniamy zmiennej grupującej
+```{r}
+fit_inf <- survfit(Surv(czas, status == 1)~1, data = dt)
+survInf <- fit_inf$surv
+timeInf <- fit_inf$time
+
+fit_zgon <- survfit(Surv(czas, status == 2)~1, data = dt)
+survZgon <- fit_zgon$surv
+timeZgon <- fit_zgon$time
+
+cumZgon <- 1- survZgon
+
+to_plot <- cbind(survInf, timeInf, rep(1, times = length(survInf)))
+to_plot <- rbind(to_plot, cbind(cumZgon, timeZgon, rep(2, times =length(cumZgon))))
+to_plot <- as.data.frame(to_plot)
+colnames(to_plot) <- c("prawdopodobieństwo przeżycia", "czas", "status")
+to_plot$status <- factor(to_plot$status)
+
+ggplot(to_plot, aes(czas, `prawdopodobieństwo przeżycia`, color = status)) + geom_step(size = 1) + scale_y_continuous(breaks = seq(0,1, length.out = 5), "Prawdopodobieństwo przeżycia (infekcja)", sec.axis=sec_axis(~., name = "1-Prawdopodobieństwo przeżycia (zgon)"))
+
+
+
+to_plot2 <- cbind(survInf, timeInf, rep(1, times = length(survInf)))
+to_plot2 <- rbind(to_plot2, cbind(survZgon, timeZgon, rep(2, times =length(cumZgon))))
+to_plot2 <- as.data.frame(to_plot2)
+colnames(to_plot2) <- c("prawdopodobieństwo przeżycia", "czas", "status")
+to_plot2$status <- factor(to_plot2$status)
+lower <- c(fit_inf$lower, fit_zgon$lower)
+upper <- c(fit_inf$upper, fit_zgon$upper)
+to_plot2$lower <- lower
+to_plot2$upper <- upper
+
+ggplot(to_plot2, aes(czas, `prawdopodobieństwo przeżycia`, color = status)) + 
+    geom_step(size = 1) + 
+    scale_y_continuous("Prawdopodobieństwo przeżycia", limits = c(0,1)) +
+    geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.3) +
+    xlim(c(0,30))
+
+#conf interval w punkcie 12 (1 rok)
+lower_y1 <- to_plot2$lower[which(to_plot2$czas == 12)][1]
+upper_y1<- to_plot2$upper[which(to_plot2$czas == 12)][1]
+
+lower_y2 <- to_plot2$lower[which(to_plot2$czas == 12)][2]
+upper_y2<- to_plot2$upper[which(to_plot2$czas == 12)][2]
+
+ggplot(to_plot2, aes(czas, `prawdopodobieństwo przeżycia`, color = status)) + 
+    geom_step(size = 1) + 
+    scale_y_continuous("Prawdopodobieństwo przeżycia", limits = c(0,1)) +
+    geom_errorbar(aes(x = 12, ymin = lower_y1, ymax = upper_y1), color = "grey") +
+    geom_errorbar(aes(x = 12, ymin = lower_y2, ymax = upper_y2), color = "grey") +
+    xlim(c(0,30))
+
+
+#czy to nie jest dziwne, że one zbiegają do tego samego?
+#conf intervals nie zawierające wyestymowanej wielkości?
+
+```
+
+Dodajemy zmienną grupującą
+```{r}
+fit_inf_rozp <- summary(survfit(Surv(czas, status == 1)~rozpoznanie, data = dt))
+fit_zgon_rozp <- summary(survfit(Surv(czas, status == 2)~rozpoznanie, data = dt))
+
+to_plot3 <- cbind(fit_inf_rozp$strata, fit_inf_rozp$surv, fit_inf_rozp$time, fit_inf_rozp$lower, fit_inf_rozp$upper)
+
+to_plot3 <- rbind(to_plot3, cbind(fit_zgon_rozp$strata, fit_zgon_rozp$surv, fit_zgon_rozp$time, fit_zgon_rozp$lower, fit_zgon_rozp$upper))
+
+to_plot3 <- as.data.frame(to_plot3)
+to_plot3$status <- c(rep(1, times = length(fit_inf_rozp$time)), rep(2, times = length(fit_zgon_rozp$time)))
+colnames(to_plot3) <- c("rozpoznanie", "przeżycie", "czas", "lower", "upper", "status")
+
+to_plot3$rozpoznanie <- ifelse(to_plot3$rozpoznanie == 1, "AML", ifelse(to_plot3$rozpoznanie == 2, "CMML", "MDS"))
+
+
+ggplot(to_plot3, aes(czas, przeżycie, color = rozpoznanie)) + 
+    geom_step(size = 1) +
+    facet_grid(~status) +
+    xlim(c(0,30))
+    
+#troche mało danych, jak tutaj dodać przedziały ufności?
+```
+
+i testujemy - survdiff
+```{r}
+test_inf <- survdiff(Surv(czas, status == 1)~rozpoznanie, data = dt)
+
+test_zgon <- survdiff(Surv(czas, status == 2)~rozpoznanie, data = dt)
+
+```
+czyli grupy różnią się dla obydwu ryzyk, ale bardziej dla infekcji!
