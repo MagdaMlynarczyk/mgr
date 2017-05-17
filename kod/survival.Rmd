@@ -108,8 +108,17 @@ ggplot(to_plot3, aes(czas, przeżycie, color = rozpoznanie)) +
 i testujemy - survdiff
 ```{r}
 test_inf <- survdiff(Surv(czas, status == 1)~rozpoznanie, data = dt)
+test_inf
+
 
 test_zgon <- survdiff(Surv(czas, status == 2)~rozpoznanie, data = dt)
 
 ```
 czyli grupy różnią się dla obydwu ryzyk, ale bardziej dla infekcji!
+
+
+```{r}
+summary(coxph(Surv(czas, status==1)~rozpoznanie, data = dt))
+summary(coxph(Surv(czas, status==2)~rozpoznanie, data = dt))
+
+```
