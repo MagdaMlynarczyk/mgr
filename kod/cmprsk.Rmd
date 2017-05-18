@@ -69,15 +69,43 @@ upper <- upperConf(to_plot2$`prawdopodobieństwo przeżycia`, to_plot2$var)
 ggplot(to_plot2, aes(czas, `prawdopodobieństwo przeżycia`, color = status)) + 
     geom_step(size = 1) + 
     scale_y_continuous("Prawdopodobieństwo przeżycia", limits = c(0,1)) +
-    geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.3) +
-    xlim(c(0,30))
+    geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.3)
+    xlim(c(0,40))
 
 
 ```
 czy to nam coś testuje?
 ```{r}
-ci <- cuminc(dt$czas, dt$status, group = dt$rozpoznanie)
+ci <- cuminc(dt$czas, dt$status==1, group = dt$rozpoznanie)
 
+est <- c(0,0,0)
+for(i in names(ci)[1:6]){
+    x <- cbind(ci[[i]]$est, ci[[i]]$time, rep(i, times = length(ci[[i]]$est)))
+    est <- rbind(est, x)
+}
+est <- as.data.frame(est)
+est <- est[-1,]
+colnames(est) <- c("cumulative incidence", "czas", "rozp")
+est$`cumulative incidence` <- as.numeric(as.character(est$`cumulative incidence`))
+est$czas <- as.numeric(as.character(est$czas))
+est$rozp <- as.character(est$rozp)
+est$grupa <- sapply(est$rozp, function(x) strsplit(x, " ")[[1]][1])
+est$status <- sapply(est$rozp, function(x) strsplit(x, " ")[[1]][2])
+
+#ggplot
+ggplot(est, aes(czas, `cumulative incidence`, color = grupa)) + geom_step(size = 1) + facet_wrap(~status)+xlim(c(0,30))
+
+y_min_AML1 <- lowerConf(ci[[1]]$est[which.max(ci[[1]]$time >12)-1], 
+                                    ci[[1]]$var[which.max(ci[[1]]$time > 12)-1])
+y_max_AML1 <- upperConf(ci[[1]]$est[which.max(ci[[1]]$time >12)-1], 
+                                    ci[[1]]$var[which.max(ci[[1]]$time > 12)-1])
+
+
+ggplot(est, aes(czas, `cumulative incidence`, color = grupa)) + 
+    geom_step(size = 1) + 
+    facet_wrap(~status)+xlim(c(0,30)) +
+    geom_errorbar(aes(x = 12, ymin = y_min_AML1, ymax = y_max_AML1), color = "grey", size = 1) +
+    
 ```
 
 tylko znowu 9 obs dla cmml ze zgonem, trzeba porysować jak w survivalu
