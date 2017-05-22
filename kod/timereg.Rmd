@@ -1,0 +1,62 @@
+---
+title: "timreg"
+author: "Magda Młynarczyk"
+date: "22 maja 2017"
+output: html_document
+---
+
+```{r}
+library(dplyr)
+library(stringr)
+library(survival)
+library(ggplot2)
+library(timereg)
+
+setwd("C:/Users/Magda/Desktop/magisterka/stare dane")
+load("dane_obrobione.rda")
+
+dt$status_infekcja <- as.numeric(dt$Infekcja)
+dt$status_zgon <- as.numeric({dt$Infekcja == 0 & dt$Zgon == 1})
+dt$czas <- ifelse(dt$Infekcja == 1, dt$`Cykl Vidazy przy infekcji`, dt$OS)
+dt$status <- dt$status_infekcja+2*dt$status_zgon
+colnames(dt)[which(colnames(dt) == "Rozpoznanie")] <- "rozpoznanie"
+
+```
+
+
+```{r}
+dt2 <- filter(dt, !is.na(czas))
+dt2 <- filter(dt2, !is.na(status))
+Event(dt2$czas, dt2$status)
+
+
+#constant effects of predictors INF
+h <- comp.risk(Event(czas, status)~rozpoznanie, data = dt2, cause = 1,model = "prop", resample.iid = 1, n.sim = 100)
+
+
+#constant effects of predictors ZGON
+h <- comp.risk(Event(czas, status)~rozpoznanie, data = dt2, cause = 2,model = "prop", resample.iid = 1, n.sim = 100)
+
+
+#cumulative INF
+h <- comp.risk(Event(czas, status)~rozpoznanie, data = dt2, cause = 1,model = "rcif", resample.iid = 1, n.sim = 100)
+summary(h)
+
+#cumulative ZGON
+h <- comp.risk(Event(czas, status)~rozpoznanie, data = dt2, cause = 2,model = "prop", resample.iid = 1, n.sim = 100)
+summary(h)
+
+
+
+#logistic INF
+h <- comp.risk(Event(czas, status)~rozpoznanie, data = dt2, cause = 1,model = "logistic", resample.iid = 1, n.sim = 100)
+summary(h)
+
+#logistic ZGON
+h <- comp.risk(Event(czas, status)~rozpoznanie, data = dt2, cause = 2,model = "logistic", resample.iid = 1, n.sim = 100)
+summary(h)
+
+
+
+
+```
