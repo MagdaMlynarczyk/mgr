@@ -161,7 +161,7 @@ S(t) = \exp(-\int_0^t h(u)du) = \exp(-H(t))
 \end{equation}
 
 \section{Podstawowe modele parametryczne}
-W analizie przeżycia zakłada się czasami dany rozkład przeżycia, otrzymując model parametryczny. Najprostszym przykąłdem jest model eksponencjalny, w którym zakłada się stały hazard:
+W analizie przeżycia zakłada się czasami dany rozkład przeżycia, otrzymując model parametryczny. Najprostszym przykładem jest model eksponencjalny, w którym zakłada się stały hazard:
 \begin{equation}\label{exp_hazard}
 h(t) = \lambda
 \end{equation}
@@ -345,14 +345,36 @@ L(\beta) = \prod_{i: d_{i} = 1} \frac{e^{X_{i}\beta_{i}}}{\sum_{j:t_{j}>t_{i}}e^
 
 \section{Modele ryzyk konkurujących}\label{comp risks}
 
-Głównym zagadnieniem, którym zajmuję się w tej pracy są \textbf{modele ryzyk konkurujących}. Jest to jedno z dwóch podstawowych, obok modeli wielostanowych, uogólnień analizy przeżycia. W przypadku modeli ryzyk konkurujących mamy do czynienia z więcej niż jednym możliwym zdarzeniem i obserwujemy czas do wystąpienia pierwszego z nich, w odróżnieniu do modeli wielostanowych, w których, po wystąpieniu jednego zdarzenia może wystąpić następne, zgodnie z danym prawdopodobieństwem przejścia.
+Głównym zagadnieniem, którym zajmuję się w tej pracy są \textbf{modele ryzyk konkurujących}. Jest to jedno z dwóch podstawowych, obok modeli wielostanowych (ang. \textit{multistate models}), uogólnień analizy przeżycia. W przypadku modeli ryzyk konkurujących mamy do czynienia z więcej niż jednym możliwym zdarzeniem i obserwujemy czas do wystąpienia pierwszego z nich, w odróżnieniu do modeli wielostanowych, w których, po wystąpieniu jednego zdarzenia może wystąpić następne, zgodnie z danym prawdopodobieństwem przejścia. Przykładem ryzyk konkurujących może być np. zgon pacjenta z powodu raka płuc i zgon z innego powodu, czy wybór przez pracownika autobusu lub tramwaju jako środka transportu do pracy.
 
-Jedną z możliwości modelowania ryzyk konkurujących jest używanie standardowych metod analizy przeżycia dla wszystkich ryzyk niezależnie, traktując inne zdarzenia jako zdarzenia cenzorowane. To podejście nie jest jednak poprawne w większości zastosowań, gdyż wymaga założenia o niezależności ryzyk, a nawet w tym przypadku interpretacja wyników bywa wątpliwa. Problemy powstające przy zastosowaniu takiego podejścia zaprezentuję na przykładzie w następnym rozdziale.
+Formalnie, określamy nasz \textbf{zbiór ryzyk} jako $\{1,2,3,...,K\}$
 
-Istnieją trzy główne podejścia modelowania ryzyk konkurencyjnych. Są to: zastosowanie modeli Coxa, metody parametryczne oraz użycie \textbf{kumulatywnej częstości}. 
+Jedną z możliwości modelowania ryzyk konkurujących jest używanie standardowych metod analizy przeżycia dla wszystkich ryzyk osobno, traktując inne zdarzenia jako cenzorowane. To podejście nie jest jednak poprawne w większości zastosowań, gdyż wymaga założenia o niezależności ryzyk, a nawet w tym przypadku interpretacja wyników bywa wątpliwa. Problemy powstające przy zastosowaniu takiego podejścia zaprezentuję na przykładzie w następnym rozdziale.
+
+\section{Model Coxa dla ryzyk konkurujących}
+
+Pierwszym opisanym sposobem na modelowanie ryzyk konkurujących będzie zastosowanie modeli Coxa dla każdego z ryzyk osobno, traktując wszystkie pozostałe obserwacje jako cenzorowane. W tym przypadku mamy:
+
+\begin{defi}\label{hazard_k}
+\textbf{Funkcja hazardu dla ryzyka $k$} - funkcja $h_k:[0,\infty) \to \mathbf{R}$ dana wzorem:
+
+$$h_k(t)= lim_{\delta \to 0} \frac{\mathbf{P}(t<T_k<t+\delta|T_k>t)}{\delta}, \ \ \ k \in \{1,2,3,...,K\} $$
+
+\end{defi}
+gdzie: $T_k$ - czas do zdarzenia rodzaju $k$.
+
+Model Coxa zastosowany do ryzyka $k$ przyjmuje wówczas postać:
+
+\begin{equation}
+h_k(t) = h_{0,k}(t) e^{\beta_{1,k}z_1 + \beta_{2,k}z_2 +...+ \beta_{m,k}z_m}, \ \ \ k \in \{1,2,3,...,K\}
+\end{equation}
 
 
 
+
+
+
+Takie podejście nie tylko zakłada niezależność ryzyk, ale także wymaga estymację $K$ modeli, podczas gdy używając innych metod, wystarczy nam estymacja jednego modelu.
 
 \chapter{Biblioteka jakas nazwa}\label{r:losers}
 

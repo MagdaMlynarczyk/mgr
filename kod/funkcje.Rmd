@@ -1,0 +1,39 @@
+---
+title: "funkcje"
+author: "Magda Młynarczyk"
+date: "24 maja 2017"
+output: html_document
+---
+
+```{r}
+library(dplyr)
+library(survival)
+library(ggplot2)
+
+```
+
+SURVIVAL plot
+```{r}
+#status must be numeric, 0 means censoring
+
+
+prep_data <- function(time, status, group, data){
+    
+    risks <- as.data.frame(unique(data[, status]))
+    risks <- filter(risks, risks != 0)
+    risks <- as.vector(risks[,1])
+    nr_of_risks <- as.numeric(length(risks))
+    
+    data[, time] <- as.numeric(data[, time])
+    #dla każdego statusu robimy oddzielną analizę przeżycia z rozróżnieniem na grupy
+    #fit to lista, której elementy to survfit dla poszczególnych statusów
+    fit <- list()
+    for(i in 1:nr_of_risks){
+        fit[[i]] <- survfit(Surv(time, status == risk[i])~group, data = data)
+    }
+    return(fit)
+}
+
+
+
+```

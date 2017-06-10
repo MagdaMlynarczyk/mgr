@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "library(RTCGA.clinical)\n\nLUAD <- LUAD.clinical[,c(\"patient.new_tumor_events.new_tumor_event.days_to_new_tumor_event_after_initial_treatment\",\n                         \n                         \"patient.days_to_death\",\n                         \n                         \"patient.days_to_last_followup\",\n                         \n                         \"patient.gender\")]\n\n\n\n# clean colnames\n\ncolnames(LUAD) <- c(\"new_tumor_event\", \"days_to_death\", \"days_to_last_followup\", \"gender\")\n\n\n\n# create new variables\n\nLUAD$event <- ifelse(!is.na(LUAD$new_tumor_event), \"new_tumor\",\n                     \n                     ifelse(!is.na(LUAD$days_to_death), \"death\",\n                            \n                            \"alive\"))\n\nLUAD$time <- pmin(as.numeric(LUAD$new_tumor_event), \n                  \n                  as.numeric(LUAD$days_to_death), \n                  \n                  as.numeric(LUAD$days_to_last_followup), na.rm = TRUE)",
+    "created" : 1497091759754.000,
+    "dirty" : true,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "198816449",
+    "id" : "C46FAC16",
+    "lastKnownWriteTime" : 2318273488234051173,
+    "last_content_update" : 1497091763676,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

@@ -1,0 +1,56 @@
+---
+title: "test pakietu 2"
+author: "Magda Młynarczyk"
+date: "4 czerwca 2017"
+output: html_document
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning = FALSE)
+```
+
+
+CO ROBI MÓJ PAKIET 
+```{r, include=FALSE}
+library(cr07)
+
+load("C:/Users/Magda/Documents/GitHub/mgr/kod/package/cr07/data/cancer.rda")
+
+cancer <- dt
+
+rm(dt)
+```
+
+```{r}
+fit2 <- FitSurvival("CI_time", "CI_status", "Response", cancer)
+plot2 <- PlotSurvival(fit2,2)
+plot2
+#BRAKUJE PRZEDZIAŁÓW UFNOŚCI
+
+```
+
+```{r}
+lrt2 <- LrtSurvival("CI_time", "CI_status", "Response", cancer)
+lrt2
+```
+
+```{r}
+scox2 <- simpleCox("CI_time", "CI_status", "Response", cancer)
+scox2
+
+ccox2 <- compCox("CI_time", "CI_status", "Response", cancer)
+ccox2
+```
+
+```{r}
+ci2 <- CumincTest(CumulativeIncidence("CI_time", "CI_status", "Response", cancer))
+ci2
+```
+
+```{r}
+crr2 <- CompRiskReg("CI_time", "CI_status", "Response", cancer)
+crr2
+
+
+
+```

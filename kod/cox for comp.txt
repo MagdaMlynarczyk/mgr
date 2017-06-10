@@ -1,0 +1,68 @@
+
+#' @title competing risks cox model
+#' @name compCox
+#' @description The function fits cos models for each risk using competing risks theory
+#' @param time time must be numeric
+#' @param risk can be numeric or factor/character
+#' @param group can be numeric or factor/character
+#' @param data can be data frame or matrix
+#' @param type "kaplan-meier", "fleming-harrington" or "fh2"
+#' @param conf.int level of two sided conf int
+#' @param conf.type "none", "plain", "log" (default), "log-log
+#' @param error "greenwood (default)', "tsiatis", "aalen
+#' @export
+#' @importFrom dplyr filter
+#' @importFrom survival Surv coxph
+#' @importFrom knitr kable
+
+
+compCox <- function(time,
+                      risk,
+                      group,
+                      data,
+                      cens = 0)
+{
+    #data preparation
+    data <- as.data.frame(data)
+    
+    data <- filter(data, !is.na(data[, risk]))
+    
+    timeVec <- data[,time]
+    groupVec <- data[, group]
+    riskVec <- data[,risk]
+    
+    #status are numeric
+    if(is.numeric(riskVec)) {statusVec <- riskVec
+       } else {
+            risks <- as.data.frame(unique(riskVec))
+            risks <- filter(risks, risks != cens)
+            risks$status <- 1:nrow(risks)
+            censoring <- c(cens, 0)
+            map <- rbind(risks, censoring)
+            colnames(map) <- c("risk", "status")
+            statusVec <- sapply(riskVec, function(x){
+                if(is.na(x)) NA
+                nr <- which(map$risk == x)
+                map$status[nr]
+            })
+            statusVec <- factor(unlist(statusVec))
+            }
+    
+    
+    
+    
+    fit <- summary(coxph(Surv(time = timeVec, 
+                              event = statusVec, 
+                              type = "mstate")~factor(groupVec)))
+
+    tab <- as.data.frame(c(fit$logtest[3], fit$waldtest[3], fit$sctest[3]))
+    rownames(tab) <- c("Likelihood ratio test", "Wald test", "Logrank test")
+    colnames(tab) <- "p-value"
+
+    kable(tab, digits = 4, caption = "Tests of differences in survival curves between groups using competing risks Cox model",
+          format.args = list(scientific = FALSE))
+
+    }
+
+
+

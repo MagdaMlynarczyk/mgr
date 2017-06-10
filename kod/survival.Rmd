@@ -70,9 +70,9 @@ upper_y2<- to_plot2$upper[which(to_plot2$czas == 12)][2]
 
 ggplot(to_plot2, aes(czas, `prawdopodobieństwo przeżycia`, color = status)) + 
     geom_step(size = 1) + 
-    scale_y_continuous("Prawdopodobieństwo przeżycia", limits = c(0,1)) +
-    geom_errorbar(aes(x = 12, ymin = lower_y1, ymax = upper_y1), color = "grey") +
-    geom_errorbar(aes(x = 12, ymin = lower_y2, ymax = upper_y2), color = "grey") +
+        scale_y_continuous("Prawdopodobieństwo przeżycia", limits = c(0,1)) +
+        geom_errorbar(aes(x = 12, ymin = lower_y1, ymax = upper_y1), color = "grey") +
+        geom_errorbar(aes(x = 12, ymin = lower_y2, ymax = upper_y2), color = "grey") +
     xlim(c(0,30))
 
 

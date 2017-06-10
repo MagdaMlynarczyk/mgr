@@ -1,0 +1,54 @@
+---
+title: "Untitled"
+author: "Magda Młynarczyk"
+date: "2 czerwca 2017"
+output: html_document
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning = FALSE)
+```
+
+
+CO ROBI MÓJ PAKIET 
+```{r, include=FALSE}
+library(cr07)
+
+load("C:/Users/Magda/Documents/GitHub/mgr/kod/package/cr07/data/aml.rda")
+
+aml <- data
+
+rm(data)
+
+```
+
+```{r}
+#AML
+fit1 <- FitSurvival("time", "risk", "group", aml)
+plot1 <- PlotSurvival(fit1,2)
+plot1
+
+```
+
+```{r}
+lrt1 <- LrtSurvival("time", "risk", "group", aml)
+lrt1
+
+```
+
+```{r}
+scox1 <- simpleCox("time", "risk", "group", aml)
+scox1
+```
+
+```{r}
+ci1 <- CumincTest(CumulativeIncidence("time", "risk", "group", aml))
+ci1
+
+```
+
+```{r}
+crr1 <- CompRiskReg("time", "risk", "group", aml)
+crr1
+
+```

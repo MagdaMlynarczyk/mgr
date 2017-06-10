@@ -116,9 +116,9 @@ crr, ale brakuje p-value dla lrt chyba
 ```{r}
 cov <- model.matrix(~dt$rozpoznanie)[,-1]
 crr1 <- crr(dt$czas, dt$status, cov1 = cov, failcode = 1)
-summa`ry(crr1)
+summary(crr1)
 
 crr2 <- crr(dt$czas, dt$status, cov1 = cov, failcode = 2)
 summary(crr2)
 
-``
+```
